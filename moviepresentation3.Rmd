@@ -1,0 +1,102 @@
+---
+title: "Director Changes in Blockbuster Movie Series"
+author: "Tim Keele"
+date: "4/25/2020"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(plotly)
+library(ggplot2)
+font = list(family="Courier New, monospace", size=18, color="#CfCfCf")
+
+```
+
+## Synopsis
+
+This is a quick visualization of the box office proceeds three movie series that spanned over a decade, and whose directors changed hands several times, broken down by possible metrics of their success as taken from wikipedia.org. 
+
+
+## Obtaining and Plotting Movie Data
+
+We aggregated the movie data from Wikipedia and Rotten Tomatoes for the Harry Potter, Lord of the Rings, and Spider-Man movie franchises.  We gathered an average rating out of 10, found the budget and box office return in millions. We also noted when the director of each series changed, or in the case of Lord of the Rings, was confused, a case we will discuss later. 
+
+We have plotted the movies in the order they released against their worldwide box office incomes in USD.  Then we sized each point based off the movie's budget, a sometimes approximate value for which we used the average of the given range, and colored them based off their average review score from the Rotten Tomatoes website out of 10.  Finally, we colored the border of each point a different color for every different director in the movie series, so that the advantages of retaining a director for multiple movies, or changing directors after a flop, can be inspected.  
+
+```{r moviedata, include=FALSE}
+hp <- data.frame( rating = c(7.06, 7.21, 7.85, 7.45, 6.9, 7.12, 7.09, 8.34), budget = c(125, 100, 130, 150, 150, 250, 125,125), boxoffice = c(975, 879, 798, 897, 940, 934, 960, 1342), director=c(1, 1, 2, 3, 4, 4, 4, 4))
+
+lr <- data.frame( rating = c(8.18, 8.49, 8.69, 6.55, 6.81, 6.28), budget = c(93, 94, 94, 180, 225, 250), boxoffice = c(888, 951, 1142, 1021, 958, 956), director = as.factor(c(1, 1, 1, 2,2,2)))
+
+sm <- data.frame( rating = c(7.64, 8.3, 6.23, 6.65, 5.81, 7.67, 7.45), budget = c(139, 200, 258, 215, 247, 175, 160), boxoffice = c(822, 789, 895, 758, 709, 880, 1132), director = as.factor(c(1, 1, 1, 2, 2, 3, 3)))
+
+dircol <- c("goldenrod", "pink", "cyan", "darkslategrey")
+
+```
+
+
+## Harry Potter Film Franchise (Original 8)
+
+Here we look at the original eight movies in the Harry Potter film franchise, noteable for its frequent director changes and tone shifts in the series.  It was the most continusouly developed of the movies in this quick study, release a movie about every two years.
+
+
+## Harry Potter Film Franchise (Original 8)
+```{r hps, echo=FALSE, warning=FALSE, message=FALSE}
+hpfig<- plot_ly(data=hp, x=1:8, y=hp$boxoffice, color=hp$rating, colors="RdYlBu", mode="markers",  
+        marker=list(line=list(width=3, color= dircol[hp$director]), size=hp$budget, sizeref=5, sizemin=10),
+        colorbar=list(title=list(title="Av. Review on\nRotten Tomatoes", titlefont=font))
+        )
+hpfig <- layout(hpfig, xaxis= list(title="Chronological Movie Number", titlefont=font), yaxis = list(title="Worldwide Box Office Returns\nin Millions of USD", titlefont=font), title="Harry Potter Movie Box Office Success")
+hpfig
+```
+
+## Harry Potter Film Franchise (Original 8)
+In this series, the strangest outlier is the worst performing movie, the third, which had one of the best reviews, and was the sole movie in the franchise directed by its director.  We also see that the conclusion to the series did well in all metrics.  Budget does not appear to correlate to either metric of success- box office or review rating.
+
+
+## Lord of the Rings and Hobbit Movies
+
+Here we look at the original Jackson trilogy of Lord of the Ring movies, and the much later Hobbit series set in the same universe as a prequel series.  The first trilogy had coherent direction from Jackson, but the second was partially directed under another director, and saw changeups in production cast and creative direction multiple times during its writing, inception, and creation, allowing us to examine the merit of continuity of creative direction.
+
+## Lord of the Rings and Hobbit Movies
+
+
+```{r lotr, echo=FALSE, warning=FALSE, message=FALSE}
+lrfig<-plot_ly(data=lr, x=1:6, y=lr$boxoffice, color=lr$rating, colors="RdYlBu", mode="markers",  
+        marker=list(line=list(width=3, color= dircol[lr$director]), size=lr$budget, sizeref=5, sizemin=10),
+        colorbar=list(title=list(title="Av. Review on\nRotten Tomatoes", titlefont=font))
+        )
+lrfig <- layout(lrfig, xaxis= list(title="Chronological Movie Number", titlefont=font), yaxis = list(title="Worldwide Box Office Returns\nin Millions of USD", titlefont=font), title="Lord of the Rings and Hobbit Movie Box Office Success")
+lrfig
+```
+
+## Lord of the Rings and Hobbit Movies
+
+Here we see that the first trilogy's end, like with the Harry Potter series, was well reviewed and successful, but the second series bucks this trend.  The second series also performed averagely, and and was rated poorly, despite the series' established universe, fan base, and significantly larger budget.
+
+
+## Spider Man Movies
+
+Finally, we look at a movie series that saw different directors across several 'reboots' with several years in-between each.  In this series, each director change shows a fresh attempt at telling the story of the Spider-Man character from the beginning, whereas the other movies have been stories arranged in the same universe without contradicting each other significantly.
+
+## Spider Man Movies
+
+```{r sms, echo=FALSE, warning=FALSE, message=FALSE}
+
+smfig<-plot_ly(data=sm, x=1:7, y=sm$boxoffice, color=sm$rating, colors="RdYlBu", mode="markers",  
+        marker=list(line=list(width=3, color= dircol[sm$director]), size=sm$budget, sizeref=5, sizemin=10),
+        colorbar=list(title=list(title="Av. Review on\nRotten Tomatoes", titlefont=font))
+        )
+smfig <- layout(smfig, xaxis= list(title="Chronological Movie Number", titlefont=font), yaxis = list(title="Worldwide Box Office Returns\nin Millions of USD", titlefont=font), title="Spider Man Movie Box Office Success")
+smfig
+```
+
+## Spider Man Movies
+
+As with the prior series, the end of the first trilogy saw a box office boost, but was not well rated compared to its prior installments.  We alsosee that the largest budgets were tied to the worst rated movies, as with the Hobbit series, perhaps indicating that higher the expectations for a franchise installment, the harder it is to create a good movie. We also see that 'rebooting' a series is not a good way to increase box office returns, or correct the course of a series seeing bad reviews.  Both Spider-Man reboots happened after a critically panned movie, but only one reboot resulted in a movie series with improved ratings and box office returns, implying that rebooting a series alone is not enough to garner goodwill with movie goers or reviewers.
+
+## Summary
+
+Hopefully these visualizations will help you explore the different ways directors in a movie series can change, and provide an example mode of analysis for analyzing the effects of director changes for these and other movie series.  Thanks for your time!
+
